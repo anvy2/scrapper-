@@ -2,14 +2,14 @@ import http
 from typing import Annotated, Optional
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Response
 
-from src.cache.redis import get_cache
+from src.redis import get_cache
 from src.cache_storage.redis import RedisCacheStorage
 from src.dependencies import verify_api_key
 from src.notification.console import ConsoleNotification
 from src.object_storage.local import LocalObjectStorage
 from src.scrapper.dental_stall import Scrapper
 from src.storage.local_storage import LocalStorage
-from src.cache.redis import Pipeline
+from src.redis import Pipeline
 
 router = APIRouter(prefix="/scrapper", tags=["scrapper"])
 

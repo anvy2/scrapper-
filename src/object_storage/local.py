@@ -16,7 +16,7 @@ class LocalObjectStorage(ObjectStorage[ObjectInfo]):
 
     async def save(self, data: ObjectInfo) -> str:
         downloaded_data = await self._download(data.url)
-        location = f"{self.__root_dir}/{data.name}.jpg"
+        location = f"{self.__root_dir}/{data.name}"
         os.makedirs(os.path.dirname(location), exist_ok=True)
         with open(location, "wb") as f:
             f.write(downloaded_data)
@@ -31,13 +31,13 @@ class LocalObjectStorage(ObjectStorage[ObjectInfo]):
         return results
 
     async def get(self, _id: str) -> str | None:
-        location = f"{self.__root_dir}/{_id}.jpg"
+        location = f"{self.__root_dir}/{_id}"
         if os.path.exists(location):
             return location
         return None
 
     async def delete(self, _id: str) -> str | None:
-        location = f"{self.__root_dir}/{_id}.jpg"
+        location = f"{self.__root_dir}/{_id}"
         if os.path.exists(location):
             os.remove(location)
             return location

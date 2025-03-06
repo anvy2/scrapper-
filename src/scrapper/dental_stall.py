@@ -37,7 +37,7 @@ class Scrapper:
             client_kwargs["proxy"] = format_proxy(proxy)
         return httpx.AsyncClient(**client_kwargs)
 
-    @retry_async(max_tries=1, delay=1)
+    @retry_async(max_tries=5, delay=5, exceptions=(HTTPException,))
     async def scrap(self, user_id: str, page_limit: Optional[int] = None):
         response = await self.__client.get(self.__url)
         if (response.status_code // 100) != 2:
@@ -72,7 +72,7 @@ class Scrapper:
             if item["path_to_image"] is not None:
                 if item["path_to_image"] not in cached_images:
                     image = await self.__object_storage.save(
-                        ObjectInfo(name=item["product_title"], url=item["path_to_image"])
+                        ObjectInfo(name=f"{item['product_title']}.jpg", url=item["path_to_image"])
                     )
                     new_cache_image_data.append(CacheItem(key=item["path_to_image"], data=image))
                     item["path_to_image"] = image
@@ -96,7 +96,7 @@ class Scrapper:
             user_id=user_id, message=f"Scrapped {total_items_count} items"
         )
 
-    @retry_async(max_tries=1, delay=1)
+    @retry_async(max_tries=5, delay=5, exceptions=(HTTPException,))
     async def _scrap_page(self, page: int) -> list[ScrapperItem]:
         url = f"{self.__url}/page/{page}"
         response = await self.__client.get(url)
